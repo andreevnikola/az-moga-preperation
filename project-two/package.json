@@ -1,0 +1,31 @@
+{
+  "name": "project-two",
+  "version": "1.0.0",
+  "description": "# In the contest itself we can be using this as a starting point",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node --loader ts-node/esm ./src/index.ts",
+    "build": "tsc",
+    "dev": "nodemon"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "chai": "^5.1.1",
+    "jest": "^29.7.0",
+    "mocha": "^10.4.0",
+    "nodemon": "^3.1.0",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@types/prompt-sync": "^4.2.3",
+    "prompt-sync": "^4.2.0"
+  }
+}
