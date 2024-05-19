@@ -5,6 +5,11 @@ import { boardSizeValidator } from "./utils/input/validators.js";
 
 const inputManager = new InputManager();
 
+export enum Player {
+  player1 = "P1",
+  player2 = "P2",
+}
+
 async function main() {
   const [width, height] = await inputManager.promptInput(
     "Enter the size of the board (width height)",

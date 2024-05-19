@@ -1,3 +1,5 @@
+import { Player } from "../..";
+
 export enum Sign {
   multiplication = "x",
   addition = "+",
@@ -8,6 +10,7 @@ export enum Sign {
 export class BoardItem {
   private sign: Sign = Sign.addition;
   private value: number = 0;
+  private visitedBy: undefined | Player = undefined;
 
   constructor(sign: Sign, value: number) {
     this.sign = sign;
@@ -15,6 +18,8 @@ export class BoardItem {
   }
 
   get item(): string {
+    if (this.visitedBy !== undefined) return this.visitedBy.toString();
+
     return `${this.sign}${this.value}`;
   }
 
@@ -29,5 +34,13 @@ export class BoardItem {
       case Sign.division:
         return initial / this.value;
     }
+  }
+
+  get isVisited(): boolean {
+    return this.visitedBy !== undefined;
+  }
+
+  set setVisited(player: Player) {
+    this.visitedBy = player;
   }
 }
