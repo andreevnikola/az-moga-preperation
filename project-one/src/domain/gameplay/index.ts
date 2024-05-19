@@ -14,7 +14,7 @@ class Gameplay {
   }
 
   public static getInstance(board?: Board): Gameplay {
-    if (!Gameplay.instance) {
+    if (!Gameplay.instance || board) {
       if (!board) {
         throw new Error("Board instance is required to initialize Gameplay");
       }
@@ -95,7 +95,6 @@ class Gameplay {
   private switchTurn(): void {
     this.currentTurn = this.currentTurn === Turn.P1 ? Turn.P2 : Turn.P1;
   }
-  
 }
 
 export { Gameplay };
