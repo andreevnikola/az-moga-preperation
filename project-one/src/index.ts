@@ -32,10 +32,14 @@ async function main() {
     { sign: Sign.multiplication, value: 0 },
     { sign: Sign.multiplication, value: 2 },
   ]);
-  const gameplay = Gameplay.getInstance();
+
+  const gameplay = Gameplay.getInstance(board);
 
   while (!gameplay.isGameOver()) {
     const currentPlayer = gameplay.getCurrentPlayer();
+    if (!gameplay.hasValidMovesForNextPlayer()) {
+      break;
+    }
     board.print();
     const scores = gameplay.getScores();
     console.log(`Scores: P1 - ${scores.P1}, P2 - ${scores.P2}`);

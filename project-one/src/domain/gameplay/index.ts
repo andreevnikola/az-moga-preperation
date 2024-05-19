@@ -13,9 +13,12 @@ class Gameplay {
     this.board = board;
   }
 
-  public static getInstance(): Gameplay {
+  public static getInstance(board?: Board): Gameplay {
     if (!Gameplay.instance) {
-      Gameplay.instance = new Gameplay(new Board());
+      if (!board) {
+        throw new Error("Board instance is required to initialize Gameplay");
+      }
+      Gameplay.instance = new Gameplay(board);
     }
     return Gameplay.instance;
   }
@@ -25,10 +28,7 @@ class Gameplay {
   }
 
   public isGameOver(): boolean {
-    const p1Pos = this.board.getPlayerPosition(Player.player1);
-    const p2Pos = this.board.getPlayerPosition(Player.player2);
-    return !this.hasValidMoves(p1Pos[0], p1Pos[1], Player.player1) && 
-           !this.hasValidMoves(p2Pos[0], p2Pos[1], Player.player2);
+    return !this.hasValidMovesForCurrentPlayer() || !this.hasValidMovesForNextPlayer();
   }
 
   public getWinner(): Player {
@@ -61,6 +61,18 @@ class Gameplay {
       P1: this.score[Player.player1],
       P2: this.score[Player.player2]
     };
+  }
+
+  public hasValidMovesForNextPlayer(): boolean {
+    const nextPlayer = this.currentTurn === Turn.P1 ? Player.player2 : Player.player1;
+    const [x, y] = this.board.getPlayerPosition(nextPlayer);
+    return this.hasValidMoves(x, y, nextPlayer);
+  }
+
+  private hasValidMovesForCurrentPlayer(): boolean {
+    const player = this.getCurrentPlayer();
+    const [x, y] = this.board.getPlayerPosition(player);
+    return this.hasValidMoves(x, y, player);
   }
 
   private hasValidMoves(x: number, y: number, player: Player): boolean {
