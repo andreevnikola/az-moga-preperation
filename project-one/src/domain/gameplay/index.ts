@@ -2,7 +2,7 @@ import { Board } from "../board/index.js";
 import { Player, Turn } from "../../index.js";
 
 class Gameplay {
-  private static instance: Gameplay;
+  private static instance: Gameplay | null = null;
   private currentTurn: Turn;
   private score: { [key in Player]: number };
   private board: Board;
@@ -21,6 +21,10 @@ class Gameplay {
       Gameplay.instance = new Gameplay(board);
     }
     return Gameplay.instance;
+  }
+
+  public static resetInstance(): void {
+    Gameplay.instance = null; // Use null to clear the instance
   }
 
   public play(): void {
@@ -95,7 +99,6 @@ class Gameplay {
   private switchTurn(): void {
     this.currentTurn = this.currentTurn === Turn.P1 ? Turn.P2 : Turn.P1;
   }
-  
 }
 
 export { Gameplay };
