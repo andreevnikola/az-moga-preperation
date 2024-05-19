@@ -26,7 +26,7 @@ export class InputManager {
     const inp = await readLine(text + ": ");
     if (!inp) {
       console.error("This field is required.");
-      this.promptInput(text);
+      return this.promptInput(text, properties);
     }
 
     let transformed: T | string = inp;

@@ -8,8 +8,8 @@ export enum Sign {
 }
 
 export class BoardItem {
-  private sign: Sign = Sign.addition;
-  private value: number = 0;
+  private sign: Sign;
+  private value: number;
   private visitedBy: undefined | Player = undefined;
 
   constructor(sign: Sign, value: number) {
@@ -19,7 +19,6 @@ export class BoardItem {
 
   get item(): string {
     if (this.visitedBy !== undefined) return this.visitedBy.toString();
-
     return `${this.sign}${this.value}`;
   }
 
@@ -33,6 +32,8 @@ export class BoardItem {
         return initial * this.value;
       case Sign.division:
         return initial / this.value;
+      default:
+        return initial;
     }
   }
 
