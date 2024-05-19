@@ -1,33 +1,27 @@
-import { InputManager, IValidationResult } from './domain/input-manager/index.js';
-
-// Sample validator to check if input is a number and within a certain range
-const numberValidator = (inp: number): IValidationResult => {
-  if (isNaN(inp)) {
-    return { isValid: false, message: "Input must be a number." };
-  }
-  if (inp < 1 || inp > 10) {
-    return { isValid: false, message: "Number must be between 1 and 10." };
-  }
-  return { isValid: true, message: "" };
-};
-
-// Sample transformer to convert string input to a number
-const numberTransformer = (inp: string): number => {
-  return parseFloat(inp);
-};
+import { InputManager } from './domain/input-manager/index.js';
+import { Board } from './domain/board/index.js';
 
 async function main() {
   const inputManager = InputManager.getInstance();
+  const width = await inputManager.promptInput<number>('Enter board width', { transformer: Number });
+  const height = await inputManager.promptInput<number>('Enter board height', { transformer: Number });
 
-  const numberInput = await inputManager.promptInput<number>(
-    "Please enter a number between 1 and 10",
-    {
-      validator: numberValidator,
-      transformer: numberTransformer,
+  const board = Board.getInstance(width, height);
+  board.drawBoard();
+
+  let currentPlayer = 'P1';
+  while (true) {
+    const x = await inputManager.promptInput<number>(`Player ${currentPlayer}, enter x coordinate`, { transformer: Number });
+    const y = await inputManager.promptInput<number>(`Player ${currentPlayer}, enter y coordinate`, { transformer: Number });
+
+    try {
+      board.placeQueen(x, y, currentPlayer);
+      board.drawBoard();
+      currentPlayer = currentPlayer === 'P1' ? 'P2' : 'P1';
+    } catch (error: any) {
+      console.error(error.message);
     }
-  );
-
-  console.log(`You entered the valid number: ${numberInput}`);
+  }
 }
 
 main();
