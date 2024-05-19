@@ -1,3 +1,4 @@
+import { Board } from "./domain/board/index.js";
 import { InputManager } from "./domain/input-manager/index.js";
 import { coordsTransformer } from "./utils/input/transformers.js";
 import { boardSizeValidator } from "./utils/input/validators.js";
@@ -13,7 +14,9 @@ async function main() {
     }
   );
 
-  console.log(width.toString(), height.toString());
+  const board = new Board(width, height);
+
+  board.print();
 }
 
 main();
