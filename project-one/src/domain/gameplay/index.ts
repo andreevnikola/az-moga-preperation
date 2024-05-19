@@ -14,7 +14,7 @@ class Gameplay {
   }
 
   public static getInstance(board?: Board): Gameplay {
-    if (!Gameplay.instance) {
+    if (!Gameplay.instance || board) {
       if (!board) {
         throw new Error("Board instance is required to initialize Gameplay");
       }
