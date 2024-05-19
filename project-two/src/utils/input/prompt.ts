@@ -10,3 +10,7 @@ export const readLine = (question: string): Promise<string> => {
     rl.question(question, (answer) => resolve(answer));
   });
 };
+
+export const closeReadLine = () => {
+  rl.close();
+};
