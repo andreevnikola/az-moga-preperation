@@ -10,9 +10,9 @@ export class Board {
     [Player.player1]: [0, 0],
     [Player.player2]: [0, 0],
   };
-  playerPreviousPositions: { [key in Player]: [number, number] | null } = {
-    [Player.player1]: null,
-    [Player.player2]: null,
+  playerPreviousPositions: { [key in Player]: [number, number][] } = {
+    [Player.player1]: [],
+    [Player.player2]: [],
   };
 
   constructor(
@@ -58,7 +58,9 @@ export class Board {
 
   setVisited(x: number, y: number, player: Player): void {
     const [prevX, prevY] = this.playerPositions[player];
-    this.playerPreviousPositions[player] = [prevX, prevY];
+    if (prevX !== x || prevY !== y) {
+      this.playerPreviousPositions[player].push([prevX, prevY]);
+    }
     this.board[y][x].setVisited = player;
     this.playerPositions[player] = [x, y];
   }
@@ -84,7 +86,7 @@ export class Board {
     this.board[0].forEach((_, __) => (rowsHolder += "==="));
     rowsHolder += "#";
 
-    let numbersHolder = "   ";
+    let numbersHolder = "    ";
     this.board[0].forEach(
       (_, i) => (numbersHolder += i < 10 ? ` 0${i}` : ` ${i}`)
     );
@@ -95,14 +97,18 @@ export class Board {
     this.board.forEach((row, rowIndex) => {
       const rowStr = row.map((item, colIndex) => {
         const positionP1 = this.playerPositions[Player.player1];
-        const previousPositionP1 = this.playerPreviousPositions[Player.player1];
+        const previousPositionsP1 = this.playerPreviousPositions[Player.player1];
         const positionP2 = this.playerPositions[Player.player2];
+        const previousPositionsP2 = this.playerPreviousPositions[Player.player2];
+        
         if (positionP1[0] === colIndex && positionP1[1] === rowIndex) {
           return "P1";
         } else if (positionP2[0] === colIndex && positionP2[1] === rowIndex) {
           return "P2";
-        } else if (previousPositionP1 && previousPositionP1[0] === colIndex && previousPositionP1[1] === rowIndex) {
+        } else if (previousPositionsP1.some(pos => pos[0] === colIndex && pos[1] === rowIndex)) {
           return "*1";
+        } else if (previousPositionsP2.some(pos => pos[0] === colIndex && pos[1] === rowIndex)) {
+          return "*2";
         } else {
           return item.item;
         }
