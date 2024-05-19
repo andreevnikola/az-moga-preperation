@@ -28,7 +28,10 @@ class Gameplay {
   }
 
   public isGameOver(): boolean {
-    return !this.hasValidMovesForCurrentPlayer() || !this.hasValidMovesForNextPlayer();
+    return (
+      !this.hasValidMovesForCurrentPlayer() ||
+      !this.hasValidMovesForNextPlayer()
+    );
   }
 
   public getWinner(): Player {
@@ -56,15 +59,16 @@ class Gameplay {
     this.switchTurn();
   }
 
-  public getScores(): { P1: number, P2: number } {
+  public getScores(): { P1: number; P2: number } {
     return {
       P1: this.score[Player.player1],
-      P2: this.score[Player.player2]
+      P2: this.score[Player.player2],
     };
   }
 
   public hasValidMovesForNextPlayer(): boolean {
-    const nextPlayer = this.currentTurn === Turn.P1 ? Player.player2 : Player.player1;
+    const nextPlayer =
+      this.currentTurn === Turn.P1 ? Player.player2 : Player.player1;
     const [x, y] = this.board.getPlayerPosition(nextPlayer);
     return this.hasValidMoves(x, y, nextPlayer);
   }

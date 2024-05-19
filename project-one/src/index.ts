@@ -4,6 +4,7 @@ import { InputManager } from "./domain/input-manager/index.js";
 import { coordsTransformer } from "./utils/input/transformers.js";
 import { boardSizeValidator } from "./utils/input/validators.js";
 import { Gameplay } from "./domain/gameplay/index.js";
+import { GameplayService } from "./services/gameplay.js";
 
 const inputManager = new InputManager();
 
@@ -35,31 +36,24 @@ async function main() {
 
   const gameplay = Gameplay.getInstance(board);
 
+  const gameplayService: GameplayService = new GameplayService();
+
   while (!gameplay.isGameOver()) {
-    const currentPlayer = gameplay.getCurrentPlayer();
-    if (!gameplay.hasValidMovesForNextPlayer()) {
-      break;
-    }
-    board.print();
-    const scores = gameplay.getScores();
-    console.log(`Scores: P1 - ${scores.P1}, P2 - ${scores.P2}`);
-    const [x, y] = await inputManager.promptInput(
-      `${currentPlayer}, enter your move (x y)`,
+    gameplayService.frameOutput();
+    const inp = await inputManager.promptInput(
+      `${gameplay.getCurrentPlayer()}, enter your move (x y)`,
       {
         transformer: coordsTransformer,
       }
     );
-
-    if (gameplay.isValidMove(x, y)) {
-      gameplay.makeMove(x, y);
-    } else {
-      console.log("Invalid move, try again.");
-    }
+    gameplayService.frame(inp);
   }
 
   const winner = gameplay.getWinner();
   const finalScores = gameplay.getScores();
-  console.log(`Game over! The winner is ${winner}. Final scores: P1 - ${finalScores.P1}, P2 - ${finalScores.P2}`);
+  console.log(
+    `Game over! The winner is ${winner}. Final scores: P1 - ${finalScores.P1}, P2 - ${finalScores.P2}`
+  );
 }
 
 main();
