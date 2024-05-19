@@ -1,3 +1,4 @@
+import { Sign } from "./domain/board/board-item.js";
 import { Board } from "./domain/board/index.js";
 import { InputManager } from "./domain/input-manager/index.js";
 import { coordsTransformer } from "./utils/input/transformers.js";
@@ -19,7 +20,12 @@ async function main() {
     }
   );
 
-  const board = new Board(width, height);
+  const board = new Board(width, height, [
+    { sign: Sign.addition, value: Math.floor(Math.random() * 8) + 1 },
+    { sign: Sign.subtraction, value: Math.floor(Math.random() * 8) + 1 },
+    { sign: Sign.multiplication, value: 0 },
+    { sign: Sign.multiplication, value: 2 },
+  ]);
 
   board.print();
 }
