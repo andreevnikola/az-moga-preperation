@@ -1,4 +1,9 @@
-import { readLine } from "../../utils/prompt.js";
+import { readLine } from "../../utils/input/prompt.js";
+
+export interface IValidationResult {
+  isValid: boolean;
+  message: string;
+}
 
 export class InputManager {
   static instance: InputManager | undefined = undefined;
@@ -13,7 +18,10 @@ export class InputManager {
 
   async promptInput<T>(
     text: string,
-    transformer?: (inp: string) => T
+    properties?: {
+      validator?: (inp: T) => IValidationResult;
+      transformer?: (inp: string) => T;
+    }
   ): Promise<T> {
     const inp = await readLine(text + ": ");
     if (!inp) {
@@ -21,15 +29,26 @@ export class InputManager {
       this.promptInput(text);
     }
 
-    if (transformer) {
+    let transformed: T | string = inp;
+
+    if (properties?.transformer) {
       try {
-        return transformer(inp!);
+        transformed = properties.transformer(inp!);
       } catch (e) {
         console.error("Invalid input, please try again.");
-        return this.promptInput(text, transformer);
+        return this.promptInput(text, properties);
       }
     }
 
-    return inp! as T;
+    if (properties?.validator) {
+      const validator = properties.validator(transformed as T);
+      if (!validator.isValid) {
+        console.error("Invalid input, please try again.");
+        console.error(validator.message);
+        return this.promptInput(text, properties);
+      }
+    }
+
+    return transformed! as T;
   }
 }
