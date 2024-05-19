@@ -20,7 +20,7 @@ export class Board {
     height?: number,
     requiredFields?: { sign: Sign; value: number }[]
   ) {
-    if (Board.instance) {
+    if (Board.instance && (!width && !height)) {
       return Board.instance;
     }
 

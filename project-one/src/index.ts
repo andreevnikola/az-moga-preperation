@@ -18,6 +18,13 @@ export enum Turn {
   P2 = Player.player2,
 }
 
+export const mustDoFields = [
+  { sign: Sign.addition, value: Math.floor(Math.random() * 8) + 1 },
+  { sign: Sign.subtraction, value: Math.floor(Math.random() * 8) + 1 },
+  { sign: Sign.multiplication, value: 0 },
+  { sign: Sign.multiplication, value: 2 },
+];
+
 async function main() {
   const [width, height] = await inputManager.promptInput(
     "Enter the size of the board (width height)",
@@ -27,12 +34,7 @@ async function main() {
     }
   );
 
-  const board = new Board(width, height, [
-    { sign: Sign.addition, value: Math.floor(Math.random() * 8) + 1 },
-    { sign: Sign.subtraction, value: Math.floor(Math.random() * 8) + 1 },
-    { sign: Sign.multiplication, value: 0 },
-    { sign: Sign.multiplication, value: 2 },
-  ]);
+  const board = new Board(width, height, mustDoFields);
 
   const gameplay = Gameplay.getInstance(board);
 
@@ -40,13 +42,13 @@ async function main() {
 
   while (!gameplay.isGameOver()) {
     gameplayService.frameOutput();
-    const inp = await inputManager.promptInput(
+    const getInp = async () => await inputManager.promptInput(
       `${gameplay.getCurrentPlayer()}, enter your move (x y)`,
       {
         transformer: coordsTransformer,
       }
     );
-    gameplayService.frame(inp);
+    await gameplayService.frame(getInp);
   }
 
   const winner = gameplay.getWinner();

@@ -14,7 +14,8 @@ export class GameplayService {
     this.inputManager = new InputManager();
   }
 
-  frame(input: [number, number]): boolean {
+  async frame(getInput: () => Promise<[number, number]>): Promise<boolean> {
+    const input = await getInput();
     const [x, y] = input;
 
     if (!this.gameplay.hasValidMovesForNextPlayer()) {
@@ -25,7 +26,7 @@ export class GameplayService {
       this.gameplay.makeMove(x, y);
     } else {
       console.log("Invalid move, try again.");
-      this.frame(input);
+      await this.frame(getInput);
     }
 
     return true;

@@ -95,6 +95,7 @@ class Gameplay {
   private switchTurn(): void {
     this.currentTurn = this.currentTurn === Turn.P1 ? Turn.P2 : Turn.P1;
   }
+  
 }
 
 export { Gameplay };
