@@ -1,4 +1,4 @@
-import { IValidationResult } from "../../domain/input-manager";
+import { IValidationResult } from "../../domain/input-manager/index.js";
 
 function isBetween(value: number, min: number, max: number): boolean {
   return value >= min && value <= max;

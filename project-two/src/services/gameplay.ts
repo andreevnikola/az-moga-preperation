@@ -1,13 +1,10 @@
-import Gameplay from "../domain/gameplay";
+import Gameplay from "../domain/gameplay/index.js";
 
 export class GameplayService {
   private static instance: GameplayService | null = null;
   private gameplay: Gameplay | null = null;
 
-  constructor() {
-    GameplayService.instance = new GameplayService();
-    GameplayService.instance.gameplay = Gameplay.getInstance();
-  }
+  constructor() {}
 
   static getInstance() {
     if (!GameplayService.instance) {
@@ -17,11 +14,11 @@ export class GameplayService {
     return GameplayService.instance;
   }
 
-  runFrame(prompter: () => { x: number; y: number }) {
-    const { x, y } = prompter();
+  async runFrame(prompter: () => Promise<{ x: number; y: number }>) {
+    const { x, y } = await prompter();
 
     try {
-      this.gameplay?.addPool(x, y, this.gameplay.currentPlayer);
+      this.gameplay?.addPool(x, y, this.gameplay.currentPlayer!);
     } catch (error) {
       console.error(error);
       this.runFrame(prompter);

@@ -1,4 +1,4 @@
-import { Field } from '../field/index.js';
+import { Field } from "../field/index.js";
 
 export class Board {
   private static instance: Board;
@@ -17,7 +17,9 @@ export class Board {
   public static getInstance(width?: number, height?: number): Board {
     if (!Board.instance) {
       if (width === undefined || height === undefined) {
-        throw new Error("Board dimensions must be provided for the first instantiation.");
+        throw new Error(
+          "Board dimensions must be provided for the first instantiation."
+        );
       }
       Board.instance = new Board(width, height);
     }
@@ -25,38 +27,38 @@ export class Board {
   }
 
   public drawBoard(): void {
-    let boardStr = '   ';
+    let boardStr = "   ";
 
     for (let x = 0; x < this.width; x++) {
       boardStr += `${x}  `;
     }
-    boardStr += '\n';
+    boardStr += "\n";
 
     for (let y = 0; y < this.height; y++) {
       boardStr += `${y} `;
-      let rowStr = '';
+      let rowStr = "";
       for (let x = 0; x < this.width; x++) {
         const field = this.fields[y][x];
         if (field.isFieldUsed()) {
-          if (field.getPoll() === '**') {
-            rowStr += '**';
+          if (field.getPoll() === "**") {
+            rowStr += "**";
           } else {
             rowStr += field.getPoll();
           }
         } else {
-          rowStr += '##';
+          rowStr += "##";
         }
-        rowStr += ' ';
+        rowStr += " ";
       }
       rowStr = rowStr.slice(0, -1);
-      boardStr += rowStr + '\n';
+      boardStr += rowStr + "\n";
     }
     console.log(boardStr);
   }
 
   public placeQueen(x: number, y: number, player: string): void {
     if (this.fields[y][x].isFieldUsed()) {
-      throw new Error('Field is already used');
+      throw new Error("Field is already used");
     }
     this.fields[y][x].markUsed(player);
     this.disableFields(x, y);
@@ -74,12 +76,12 @@ export class Board {
       { dx: -1, dy: 1 },
     ];
 
-    directions.forEach(direction => {
+    directions.forEach((direction) => {
       let currentX = x + direction.dx;
       let currentY = y + direction.dy;
       while (this.isWithinBounds(currentX, currentY)) {
         if (!this.fields[currentY][currentX].isFieldUsed()) {
-          this.fields[currentY][currentX].markUsed('**');
+          this.fields[currentY][currentX].markUsed("**");
         }
         currentX += direction.dx;
         currentY += direction.dy;
@@ -89,5 +91,13 @@ export class Board {
 
   private isWithinBounds(x: number, y: number): boolean {
     return x >= 0 && x < this.width && y >= 0 && y < this.height;
+  }
+
+  public isFieldEmpty(x: number, y: number): boolean {
+    return !this.fields[y][x].isFieldUsed();
+  }
+
+  public getFields(): Field[][] {
+    return this.fields;
   }
 }

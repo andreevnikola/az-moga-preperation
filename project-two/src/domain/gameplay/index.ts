@@ -1,40 +1,47 @@
-import { Player } from "../..";
+import { Players } from "../../index.js";
+import { Board } from "../board/index.js";
+import { Field } from "../field/index.js";
 
 export default class Gameplay {
   private static instance: Gameplay | null = null;
-  private turn: Player = Player.Player1;
-  private hasGameEndedState: Promise<boolean> = new Promise(() => {});
-  private winner: Player | null = null;
+  private turn: Players | null | undefined = "P1";
+  private hasGameEndedState: Promise<void> = new Promise((resolve) => {
+    this.resolveHasGameEndedState = resolve;
+  });
+  private resolveHasGameEndedState: () => void = () => {};
+  private winner: Players | null = null;
+  private board: Board | null = null;
 
-  constructor() {
-    Gameplay.instance = new Gameplay();
-    Gameplay.instance.turn = Player.Player1;
-  }
+  constructor() {}
 
   static getInstance() {
     if (!Gameplay.instance) {
       Gameplay.instance = new Gameplay();
-      Gameplay.instance.turn = Player.Player1;
+      Gameplay.instance.turn = "P1";
+      Gameplay.instance.board = Board.getInstance();
+      Gameplay.instance.hasGameEndedState = new Promise((resolve) => {
+        Gameplay.instance!.resolveHasGameEndedState = resolve;
+      });
     }
     return Gameplay.instance;
   }
 
-  addPool(x: number, y: number, player: Player) {
+  addPool(x: number, y: number, player: Players) {
     if (!this.isFieldFree(x, y)) throw new Error("Possition is already taken");
-    // TODO: add pool to the board using x, y and player with the instance of the Baord class
+    this.board!.placeQueen(x, y, player);
   }
 
   private isFieldFree(x: number, y: number) {
-    return true;
+    return this.board!.isFieldEmpty(x, y);
   }
 
   hasGameEnded() {
     return this.checkForWinner();
   }
 
-  getWinner(): Player {
+  getWinner(): Players {
     if (!this.hasGameEnded) throw new Error("Game has not ended yet");
-    return this.winner as Player;
+    return this.winner as Players;
   }
 
   get currentPlayer() {
@@ -45,9 +52,11 @@ export default class Gameplay {
     return this.winner;
   }
 
-  onGameEnd(): Promise<Player> {
+  onGameEnd(): Promise<Players> {
     return new Promise(async (resolve) => {
+      console.log("Waiting for game to end");
       await this.hasGameEndedState;
+      console.log("Game has ended");
       resolve(this.getWinner());
     });
   }
@@ -55,16 +64,31 @@ export default class Gameplay {
   *onFrame() {
     while (!this.checkForWinner()) {
       yield;
+      this.switchTurn();
     }
+
+    this.resolveHasGameEndedState();
   }
 
   switchTurn() {
-    this.turn = this.turn === Player.Player1 ? Player.Player2 : Player.Player1;
+    this.turn = this.turn === "P1" ? "P2" : "P1";
   }
 
   private checkForWinner(): boolean {
-    this.winner = Player.Player1;
+    let areThereFreeFields = false;
+    this.board!.getFields().forEach((fields: Field[]) =>
+      fields.forEach((field: Field) => {
+        if (!field.isFieldUsed()) {
+          areThereFreeFields = true;
+        }
+      })
+    );
 
-    return true;
+    if (!areThereFreeFields) {
+      this.winner = this.turn === "P1" ? "P2" : "P1";
+      return true;
+    }
+
+    return false;
   }
 }
