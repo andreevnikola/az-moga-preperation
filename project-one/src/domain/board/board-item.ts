@@ -44,4 +44,9 @@ export class BoardItem {
   set setVisited(player: Player) {
     this.visitedBy = player;
   }
+
+  set setField(fieldData: { sign: Sign; value: number }) {
+    this.sign = fieldData.sign;
+    this.value = fieldData.value;
+  }
 }
