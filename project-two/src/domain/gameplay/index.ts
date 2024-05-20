@@ -27,7 +27,7 @@ export default class Gameplay {
   }
 
   addPool(x: number, y: number, player: Players) {
-    if (!this.isFieldFree(x, y)) throw new Error("Possition is already taken");
+    if (!this.isFieldFree(x, y)) throw new Error("Position is already taken");
     this.board!.placeQueen(x, y, player);
   }
 
@@ -40,7 +40,7 @@ export default class Gameplay {
   }
 
   getWinner(): Players {
-    if (!this.hasGameEnded) throw new Error("Game has not ended yet");
+    if (!this.hasGameEnded()) throw new Error("Game has not ended yet");
     return this.winner as Players;
   }
 
