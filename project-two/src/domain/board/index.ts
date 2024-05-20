@@ -1,7 +1,7 @@
 import { Field } from "../field/index.js";
 
 export class Board {
-  private static instance: Board;
+  private static instance: Board | null = null;
   private fields: Field[][];
   private width: number;
   private height: number;
@@ -24,6 +24,10 @@ export class Board {
       Board.instance = new Board(width, height);
     }
     return Board.instance;
+  }
+
+  public reset(): void {
+    Board.instance = null;
   }
 
   public drawBoard(): void {

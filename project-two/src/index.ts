@@ -4,6 +4,7 @@ import {
   InputManager,
   IValidationResult,
 } from "./domain/input-manager/index.js";
+import { Scoreboard } from "./domain/scoreboard/index.js";
 import { GameplayService } from "./services/gameplay.js";
 import {
   coordsTransformer,
@@ -14,6 +15,7 @@ import { boardSizeValidator } from "./utils/input/validators.js";
 export type Players = "P1" | "P2";
 
 const inputManager = InputManager.getInstance();
+const scoreboard = new Scoreboard();
 async function main() {
   const [width, height] = await inputManager.promptInput(
     "Enter width and height",
@@ -28,11 +30,20 @@ async function main() {
   const gameplayService = GameplayService.getInstance();
   const gameplay = Gameplay.getInstance();
 
-  gameplay.onGameEnd().then((winner) => {
+  gameplay.onGameEnd().then(async (winner) => {
     console.log("==================");
     console.log("Game has ended");
     console.log(`Winner is: ${winner}`);
     console.log("==================");
+
+    scoreboard.updateScore(winner);
+    scoreboard.printScores();
+
+    gameplay.reset();
+    gameplayService.reset();
+    board.reset();
+
+    await main();
   });
 
   for await (const _ of gameplay.onFrame()) {

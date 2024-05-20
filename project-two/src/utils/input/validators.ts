@@ -6,7 +6,7 @@ function isBetween(value: number, min: number, max: number): boolean {
 
 export function boardSizeValidator(inp: [number, number]): IValidationResult {
   return {
-    isValid: inp.every((val) => isBetween(val, 4, 30)),
-    message: "The board size must be between 4 and 100.",
+    isValid: inp.every((val) => isBetween(val, 6, 30)),
+    message: "The board size must be between 6 and 100.",
   };
 }

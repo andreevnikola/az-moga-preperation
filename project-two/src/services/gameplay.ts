@@ -14,6 +14,10 @@ export class GameplayService {
     return GameplayService.instance;
   }
 
+  reset() {
+    GameplayService.instance = null;
+  }
+
   async runFrame(prompter: () => Promise<{ x: number; y: number }>) {
     const { x, y } = await prompter();
 
@@ -21,7 +25,6 @@ export class GameplayService {
       this.gameplay?.addPool(x, y, this.gameplay.currentPlayer!);
     } catch (error) {
       console.error(error);
-      this.runFrame(prompter);
     }
   }
 }

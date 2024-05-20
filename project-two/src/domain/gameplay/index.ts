@@ -26,6 +26,10 @@ export default class Gameplay {
     return Gameplay.instance;
   }
 
+  reset() {
+    Gameplay.instance = null;
+  }
+
   addPool(x: number, y: number, player: Players) {
     if (!this.isFieldFree(x, y)) throw new Error("Position is already taken");
     this.board!.placeQueen(x, y, player);
